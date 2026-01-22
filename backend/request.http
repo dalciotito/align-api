@@ -1,0 +1,19 @@
+Get  http://localhost:3001/cidades
+
+
+
+###
+GET http://localhost:3001/listar-dados
+
+
+###
+GET http://localhost:3001/estados
+
+###
+GET  http://localhost:3001/cidades/bahia
+
+###
+GET  http://localhost:3001/consultar/bahia/salvador
+
+###
+GET http://localhost:3001/consultar/10002
