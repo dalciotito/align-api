@@ -8,10 +8,11 @@ const app = express();
 const upload = multer({ storage: multer.memoryStorage() });
 const SECRET_KEY = "sua_chave_secreta";
 
+
 const allowedOrigins = [
   'http://localhost:5173',
   'https://align-api.onrender.com',
-  'https://align-api-1.onrender.com/'
+  'https://align-api-1.onrender.com'
 ];
 
 app.use(cors({
