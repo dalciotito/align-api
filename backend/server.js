@@ -8,7 +8,22 @@ const app = express();
 const upload = multer({ storage: multer.memoryStorage() });
 const SECRET_KEY = "sua_chave_secreta";
 
-app.use(cors());
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://align-api.onrender.com'
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    // Permite requests sem origem (como apps mobile ou curl)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      return callback(new Error('CORS não permite este domínio'), false);
+    }
+    return callback(null, true);
+  }
+}));
+
 app.use(express.json());
 
 let database = []; // Simulação de banco de dados em memória
@@ -23,6 +38,7 @@ const auth = (req, res, next) => {
 // Login Simples
 app.post('/login', (req, res) => {
   const { user, pass } = req.body;
+  console.log('login')
   if (user === 'admin' && pass === '1234') {
     const token = jwt.sign({ id: 1 }, SECRET_KEY);
     return res.json({ token });

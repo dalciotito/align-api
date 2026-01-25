@@ -17,3 +17,13 @@ GET  http://localhost:3001/consultar/bahia/salvador
 
 ###
 GET http://localhost:3001/consultar/10002
+
+
+###
+POST http://localhost:3001/login
+Content-Type: application/json
+Accept: "*/*"
+
+{"user": "admin", 
+"pass": "1234"}
+
