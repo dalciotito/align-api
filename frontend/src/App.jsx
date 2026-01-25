@@ -5,6 +5,8 @@ import {
   FileSpreadsheet, Map, MapPin, Search, List
 } from 'lucide-react';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loginData, setLoginData] = useState({ user: '', pass: '' });
@@ -22,7 +24,7 @@ function App() {
     setApiResult(`Chamando ${label}...`);
     setViewMode('api');
     try {
-      const res = await axios.get(`http://localhost:3001${endpoint}`);
+      const res = await axios.get(`${API_URL}${endpoint}`);
       setApiResult(res.data);
       // Se for a lista geral, também atualiza a tabela principal
       if (endpoint === '/listar-dados') setPreview(res.data.dados || []);
@@ -38,7 +40,7 @@ function App() {
     setLoading(prev => ({ ...prev, login: true }));
     try {
       // Simulação de chamada de API para o seu backend
-      const res = await axios.post('http://localhost:3001/login', loginData);
+      const res = await axios.post(`${API_URL}/login`, loginData);
       localStorage.setItem('token', res.data.token);
       setIsLoggedIn(true);
     } catch (err) {
@@ -63,7 +65,7 @@ function App() {
     formData.append('file', file);
 
     try {
-      const res = await axios.post('http://localhost:3001/upload', formData);
+      const res = await axios.post(`${API_URL}/upload`, formData);
       setPreview(res.data.data || res.data.preview);
     } catch (err) {
       alert("Erro na validação. Verifique as colunas.");
@@ -75,7 +77,7 @@ function App() {
   const fetchDadosMemoria = async () => {
     setLoading(prev => ({ ...prev, fetch: true }));
     try {
-      const res = await axios.get('http://localhost:3001/listar-dados');
+      const res = await axios.get(`${API_URL}/listar-dados`);
       setPreview(res.data.dados);
     } catch (err) {
       alert("Erro ao conectar ao servidor.");
