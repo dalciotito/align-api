@@ -54,7 +54,7 @@ app.post('/upload', upload.single('file'), (req, res) => {
   const sheet = workbook.Sheets[workbook.SheetNames[0]];
   const data = xlsx.utils.sheet_to_json(sheet);
 
-  const colunasObrigatorias = ['Id', 'Doutor', 'Segmento', 'Endereço', 'Cidade', 'Estado'];
+  const colunasObrigatorias = ['ID', 'Doutor', 'Segmento', 'Endereço', 'Cidade', 'Estado', 'Bairro', 'CEP', 'WhatsApp'];
   const colunasArquivo = Object.keys(data[0] || {});
 
   console.log('colunas arquivo: ', colunasArquivo)
@@ -65,7 +65,40 @@ app.post('/upload', upload.single('file'), (req, res) => {
     return res.status(400).json({ message: "Colunas inválidas no Excel" });
   }
 
-  database = data;
+  const erros = [];
+  const dadosTratados = data.map((item, index) => {
+    // 1. Limpeza (remove tudo que não é número)
+    const cepLimpo = item.CEP ? String(item.CEP).replace(/\D/g, '') : '';
+    const whatsappLimpo = item.WhatsApp ? String(item.WhatsApp).replace(/\D/g, '') : '';
+
+    // 2. Validação básica de comprimento
+    if (cepLimpo.length !== 8) {
+      erros.push(`Linha ${index + 2}: CEP inválido (${cepLimpo})`);
+    }
+
+    // Valida WhatsApp (mínimo 10 dígitos para fixo ou 11 para celular com DDD)
+    if (whatsappLimpo.length < 10 || whatsappLimpo.length > 13) {
+      erros.push(`Linha ${index + 2}: WhatsApp inválido (${whatsappLimpo})`);
+    }
+
+    return {
+      ...item,
+      CEP: cepLimpo,
+      WhatsApp: whatsappLimpo
+    };
+  });
+
+  // Se houver erros críticos, você pode optar por bloquear o upload
+  if (erros.length > 0) {
+    console.log('Erro no arquivo importado: ', erros)
+
+    return res.status(422).json({
+      message: "Existem erros de validação nos dados",
+      errors: erros
+    });
+  }
+
+  database = dadosTratados;
   res.json({ message: "Upload concluído", preview: database });
 });
 
@@ -112,13 +145,23 @@ app.get('/consultar/:id', (req, res) => {
 
   console.log(`consultando id: ${id}`)
 
-  const filtrados = database.filter(item => String(item.Id) === String(id));
+  const filtrados = database.filter(item => String(item.ID) === String(id));
   res.json({
     total: filtrados.length,
     dados: filtrados
   });
 });
 
+app.get('/consulta-cep/:cep', (req, res) => {
+  const { cep } = req.params;
+  console.log(`consultando cep: ${cep}`)
+
+  const filtrados = database.filter(item => String(item.CEP) === String(cep));
+  res.json({
+    total: filtrados.length,
+    dados: filtrados
+  });
+})
 
 // Método para listar todos os dados carregados em memória
 app.get('/listar-dados', (req, res) => {
