@@ -17,6 +17,8 @@ function App() {
   const [estadoBusca, setEstadoBusca] = useState('');
   const [cidadeBusca, setCidadeBusca] = useState('');
   const [viewMode, setViewMode] = useState('tabela'); // 'tabela' ou 'api'
+  const [cepBusca, setCepBusca] = useState('');
+  const [idBusca, setIdBusca] = useState('');
 
   // --- Funções de Teste de API ---
   const testApi = async (endpoint, label) => {
@@ -178,6 +180,71 @@ function App() {
                   </button>
                 </div>
               </div>
+
+
+              {/* Seção: Consulta CEP */}
+              <div className="mt-4 pt-4 border-t border-gray-100">
+                <p className="text-[10px] text-gray-400 uppercase font-bold mb-3 tracking-widest text-indigo-600">
+                  Consulta CEP
+                </p>
+                <div className="space-y-3">
+                  <div className="grid grid-cols-2 gap-2">
+                    <input
+                      type="text"
+                      placeholder="CEP"
+                      maxLength="100"
+                      className="p-3 rounded-xl border border-gray-200 text-sm outline-none focus:ring-2 focus:ring-indigo-500 transition-all uppercase"
+                      value={cepBusca}
+                      onChange={(e) => setCepBusca(e.target.value)}
+                    />
+                  </div>
+
+                  <button
+                    onClick={() => {
+                      if (!cepBusca) return alert("Preencha o CEP");
+                      // Chamada para o novo endpoint ou lógica de filtro
+                      testApi(`/consulta-cep/${cepBusca}`, `Busca em ${cepBusca}`);
+                    }}
+                    className="w-full bg-slate-800 text-white p-3 rounded-xl hover:bg-black active:scale-95 transition-all shadow-md flex items-center justify-center gap-2 font-bold text-sm"
+                  >
+                    <Search size={16} />
+                    Filtrar Consultórios
+                  </button>
+                </div>
+              </div>
+
+              {/* Seção: Consulta Id */}
+              <div className="mt-4 pt-4 border-t border-gray-100">
+                <p className="text-[10px] text-gray-400 uppercase font-bold mb-3 tracking-widest text-indigo-600">
+                  Consulta ID
+                </p>
+                <div className="space-y-3">
+                  <div className="grid grid-cols-2 gap-2">
+                    <input
+                      type="text"
+                      placeholder="ID"
+                      maxLength="100"
+                      className="p-3 rounded-xl border border-gray-200 text-sm outline-none focus:ring-2 focus:ring-indigo-500 transition-all uppercase"
+                      value={idBusca}
+                      onChange={(e) => setIdBusca(e.target.value)}
+                    />
+                  </div>
+
+                  <button
+                    onClick={() => {
+                      if (!idBusca) return alert("Preencha o Id");
+                      // Chamada para o novo endpoint ou lógica de filtro
+                      testApi(`/consultar/${idBusca}`, `Busca em ${idBusca}`);
+                    }}
+                    className="w-full bg-slate-800 text-white p-3 rounded-xl hover:bg-black active:scale-95 transition-all shadow-md flex items-center justify-center gap-2 font-bold text-sm"
+                  >
+                    <Search size={16} />
+                    Filtrar Consultórios
+                  </button>
+                </div>
+              </div>
+
+
             </section>
           </div>
 
