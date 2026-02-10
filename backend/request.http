@@ -27,3 +27,24 @@ Accept: "*/*"
 {"user": "admin", 
 "pass": "1234"}
 
+
+
+
+#######################################
+## production
+######################################
+
+###
+GET https://align-api.onrender.com/estados
+
+###
+GET  https://align-api.onrender.com/cidades/são paulo
+
+###
+GET  https://align-api.onrender.com/consultar/bahia/salvador
+
+###
+GET https://align-api.onrender.com/consultar/70109
+
+###
+GET http://align-api.onrender.com/listar-dados
